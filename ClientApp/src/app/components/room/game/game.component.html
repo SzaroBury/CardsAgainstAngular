@@ -1,0 +1,23 @@
+<ng-container *ngIf="game">
+
+    <div style="height: 15%;max-height: 15%;">
+    
+        <ng-container *ngIf="game.currentSentence">
+            <h3 class="sentence">{{game.currentSentence.value}}</h3>
+        </ng-container> 
+
+        <ng-container *ngIf="game.state === 2">
+            <div class="sentence"><h4 class="text-success">{{ winnerPlayerName() }} scores a point! ヾ(＠⌒ー⌒＠)ノ</h4><br/></div>
+        </ng-container>
+            
+        <ng-container *ngIf="game.state === 3">
+            <div class="sentence"><h2 class="text-success">{{winnerPlayerName()}} scores a point and wins! <br> Congratulations! 🎆🎆🎆</h2><br/></div>
+        </ng-container>
+
+    </div>
+    
+    <app-game-board [game]="game" [userId]="userId"></app-game-board>
+    <app-game-buttons [game]="game" [userId]="userId" [ownerId]="ownerId" [connection]="connection" [selectedCards]="selectedCards"></app-game-buttons>
+    <app-game-hand [game]="game" [userId]="userId" (selectedCards)="selectedCards"></app-game-hand>
+
+</ng-container>      

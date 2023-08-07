@@ -1,0 +1,10 @@
+.mku-page {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    margin-top: 5%;
+}
+
+main {
+    flex: 1;
+}

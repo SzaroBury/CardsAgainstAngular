@@ -1,0 +1,92 @@
+<div class="game-buttons row" id="game_buttons">
+
+    <ng-container *ngIf="game">
+
+        <ng-container><div class="my-2">{{calculateTip()}}</div></ng-container>    
+        
+        <ng-container *ngIf="showConfirmButton()">
+            <button class="btn btn-dark col-md-1 h-50 my-auto" [disabled]="isConfirmDisabled()" (click)="confirm()">Confirm</button>
+        </ng-container>
+
+        <ng-container *ngIf="showNextRoundButton()">
+            <button class="btn btn-dark col-md-1 h-50 my-auto" (click)="nextRound()">Next round</button>
+        </ng-container>
+    
+    </ng-container>
+
+
+    <!-- @if(Room.Game.State == GameState.PickCards)
+    {
+        if(userId == Room.Game.ChooserId)
+        {
+            <p>You are the Card Char!<br>Wait for others to pick their answers.</p>
+        }
+        else
+        {
+            
+            if(Selected.Count == Room.Game.CurrentSentence.BlankFields)
+            {
+                <button class="btn btn-primary col-md-1 h-50 my-auto" @onclick="SendSelectedAsync">Confirm</button>
+            }
+            else if(Room.Game.ChosenCards.Exists(cardSet => cardSet.PlayerId == userId))
+            {
+                <div class="my-auto">Wait for others to pick their answers.</div>
+            }
+            else
+            {
+                <button class="btn btn-primary col-md-1 offset-md-5 h-50 my-auto" disabled>Confirm</button>
+                @if(Room.Game.CurrentSentence.BlankFields == 1)
+                {
+                    <div class="col-md-5 text-start my-auto">Pick the best matching card.</div>    
+                }
+                else if(Room.Game.CurrentSentence.BlankFields > 1)
+                {
+                    <div class="col-md-5 text-start my-auto">Pick @(Room.Game.CurrentSentence.BlankFields) cards in correct order.</div>
+                }
+            }
+        }
+
+    }
+    else if(Room.Game.State == GameState.ShowCards)
+    {
+        if(userId == Room.Game.ChooserId)
+        {
+            if(Selected.Count == Room.Game.CurrentSentence.BlankFields)
+            {
+                <button class="btn btn-primary col-md-1 h-50 my-auto" @onclick="SendSelectedChooserAsync">Confirm</button>
+            }
+            else
+            {
+                <button class="btn btn-primary col-md-1 offset-md-5 h-50 my-auto" disabled>Confirm</button>
+                <div class="col-md-5 text-start my-auto">Pick the best matching answer.</div>
+            }
+        }
+        else
+        {
+            <div class="my-auto">Wait for the decision...</div>
+        }
+
+    }
+    else if(Room.Game.State == GameState.ShowWinnerCards)
+    {
+        Guid winnerPlayerId = Room.Game.ChosenCards.FirstOrDefault(cardSet => cardSet.Winner == true).PlayerId;
+        string winnerPlayerName = Room.Players.FirstOrDefault(p => p.Id == winnerPlayerId).Name;
+
+        if(userId == Room.Game.ChooserId)
+        {
+            <button class="btn btn-primary col-md-1 offset-md-5 h-50 my-auto" @onclick="NextRoundAsync">Next round</button>
+            <div class="col-md-5 text-start my-auto">@winnerPlayerName scores a point! Click the button to continue.</div>
+        }
+        else
+        {
+            <div class="my-auto">@winnerPlayerName scores a point. Wait for next the round.</div>
+        }
+    }
+    else if(Room.Game.State == GameState.Finished)
+    {
+        if(userId == Room.OwnerId)
+        {
+            <button class="btn btn-primary col-md-1 h-50 my-auto" @onclick="NextGame">New game</button>
+        }
+    } -->
+</div>

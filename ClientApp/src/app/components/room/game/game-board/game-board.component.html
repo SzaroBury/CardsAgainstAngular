@@ -1,0 +1,20 @@
+<div class="mku-board border">
+    <ng-container *ngIf="game">
+        <ng-container *ngFor="let cardSet of game.chosenCards; index as cs;">
+            <!-- ShowCards --> 
+            <div class="border card-set" [ngClass]="{
+                'mku-cardset-selected': isSelected(cardSet), 
+                'card-set-pickable': isPickable(cardSet),
+                'mku-cardset-winner': cardSet.winner
+            }" (click)="selectCard(cardSet)">
+                <ng-container *ngFor="let card of cardSet.cards; index as c;">
+                    <p class="card" [ngClass]="{'card-selected': isSelected(cardSet),'card-winner': isWinner(cardSet)}">
+                        <ng-container *ngIf="ifShowValues()">
+                            {{card.value}}
+                        </ng-container>
+                    </p>  
+                </ng-container>
+            </div>    
+        </ng-container>
+    </ng-container>
+</div> 

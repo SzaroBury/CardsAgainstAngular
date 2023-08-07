@@ -1,0 +1,12 @@
+.mku-log-root{
+    height: 87%; 
+}
+
+.mku-chat{
+    margin-left: 2px;
+    margin-right: 2px;
+    margin-top: 5px;
+    background-color:rgb(238, 238, 238);
+    min-height: 80%;
+    min-width: 90%;
+}

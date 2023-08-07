@@ -1,0 +1,18 @@
+<div class="mku-log-root bg-white border p-2">
+    
+    <div class="mku-chat border p-2">
+        <ng-container *ngIf="messages">
+            <ng-container *ngFor="let mess of messages; index as m;">
+                    <div>{{calculateMess(mess)}}</div>
+            </ng-container>
+        </ng-container>
+    </div>
+
+    <div class="mku-chat-input input-group">
+        <input class="form-control" size=10 placeholder="Enter a message..." [(ngModel)]="newContent" (keyup.enter)="send()"/> 
+        <div class="input-group-append">
+            <button class="btn btn-dark" type="button" id="button-addon"><span class="bi bi-play-fill"></span></button>
+          </div>
+    </div>
+
+</div>

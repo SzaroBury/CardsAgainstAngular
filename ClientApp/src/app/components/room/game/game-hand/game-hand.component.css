@@ -1,0 +1,48 @@
+.card {
+    border-width: medium;
+    border-color: black;
+    margin: 5px;
+    width: 200px;
+    height: 70px;
+    justify-content: center;
+    text-align: center;
+}
+
+.card-container {
+    display: flex;
+    justify-content: center;
+    overflow-x: auto;
+    overflow-y: clip;
+    align-items: center;
+    height: 25%;
+    max-height: 25%;
+    margin-top: 30px;
+}
+
+.card-pickable {
+    transition: transform 0.2s;
+}
+
+.card-pickable:hover{
+    border-width: thick;
+    transform: translateY(-5px);
+    /* animation: slideUp 0.2s ease-in-out; */
+}
+
+.card-pickable:not(:hover) {
+    animation: slideDown 0.2s ease-in-out;
+  }
+
+.card-selected{
+    background-color: antiquewhite;
+    box-shadow: 0 0 5px 2px #000;
+    transform: translateY(-5px);
+}
+
+.mku-card-char{
+    background-color: rgb(253, 253, 253);
+    transform: translateY( 5px );
+    border-width: thin;
+    color: rgb(218, 218, 218);
+}
+
