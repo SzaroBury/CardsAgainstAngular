@@ -1,6 +1,6 @@
-# CardsAngular
+# CardsAgainstAngular
 
-A simple app that allows users to play Cards Against Humanity.
+.NET + Angular app that allows users to play Cards Against Humanity.
 
 ## Technicalities
 - ASP.NET Web API (.NET 7.0)
