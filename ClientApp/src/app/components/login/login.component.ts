@@ -17,7 +17,7 @@ export class LoginComponent implements OnInit
   constructor(private userService : UserService, private router: Router) {  }
 
   ngOnInit(): void {
-    if(this.userService.checkLocalStorage()) this.router.navigate(["/rooms"]);
+    if(this.userService.checkLocalStorage()) this.router.navigate(["/"]);
   }
 
   login()
@@ -36,7 +36,7 @@ export class LoginComponent implements OnInit
         localStorage.setItem("username", this.username);
         localStorage.setItem("userGuid", String(result));
         this.error_message = "";
-        this.router.navigate(["/rooms"]);
+        this.router.navigate(["/"]);
       }).catch((error) => 
       {
         if (error instanceof HttpErrorResponse) 
