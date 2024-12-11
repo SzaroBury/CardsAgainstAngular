@@ -102,7 +102,7 @@ export class RoomsListComponent implements OnInit
       
     }
 
-    userHasSomeRoom(): boolean 
+    userHasNoRoom(): boolean 
     {
       // console.log("userHasSomeRoom()");
       return !this.rooms.some(room => room.ownerGuid == this.userGuid);

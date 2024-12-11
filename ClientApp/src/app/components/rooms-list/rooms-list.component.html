@@ -1,4 +1,4 @@
-<h1>List of rooms</h1>
+<h1>Rooms</h1>
 <!-- <p>To add some description.</p> -->
 
 <div *ngIf="!rooms && !userGuid; else elseBlock">
@@ -38,7 +38,7 @@
                 </td>
             </tr>
             <ng-container >
-                <tr *ngIf="userHasSomeRoom()"> 
+                <tr *ngIf="userHasNoRoom()"> 
                     <td colspan="2">
                         <input class="form-control" size=10 placeholder="Enter a name for your new room..." [(ngModel)]="newRoomName" (keyup.enter)="addRoom()"/>      
                     </td>
