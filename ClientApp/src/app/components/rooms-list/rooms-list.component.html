@@ -1,4 +1,3 @@
-<h1>Rooms</h1>
 <!-- <p>To add some description.</p> -->
 
 <div *ngIf="!rooms && !userGuid; else elseBlock">
@@ -6,6 +5,33 @@
 </div>
 
 <ng-template #elseBlock>
+    <ng-container *ngIf="userHasNoRoom()">
+        <div class="new-room-grid">
+            <div class="new-room-header">
+                <h3>Create your own room</h3>
+            </div>
+            <div class="room-name-input">
+                <input class="form-control" size=10 placeholder="Enter a name for your new room..." [(ngModel)]="newRoomName" (keyup.enter)="addRoom()"/>      
+            </div>
+            <div></div>
+            <div class="room-players-input">
+                <span>Max players: &nbsp;</span> 
+                <input class="inline align-middle" type="range" min=3 max=10 [(ngModel)]="newRoomPlayers"/>
+            </div>
+            <span>{{newRoomPlayers}} </span>
+            <div></div>
+            <div>
+                <button class="btn btn-dark" title="Create room..." (click)="addRoom()">
+                    <span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M8 0 a1.5 1.5 0 0 1 1.5 1.5v5h5a1.5 1.5 0 0 1 0 3h-5v5a1.5 1.5 0 0 1-3 0v-5h-5a1.5 1.5 0 0 1 0-3h5v-5A1.5 1.5 0 0 1 8 0"/>
+                        </svg>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </ng-container>
+    <h3 class="gap-top">Available rooms</h3>
     <table class="table">
         <thead>
             <tr>
@@ -17,8 +43,8 @@
                 <th></th>
             </tr>
         </thead>
-        <tbody>
-            <tr *ngFor="let room of rooms; index as r;">
+        <tbody> 
+            <tr *ngFor="let room of rooms; index as r;" [ngClass]="{ 'no-border': r == rooms.length - 1 }">
                 <td class="center">{{r+1}}</td>
                 <td>{{room.name}}</td>
                 <td>
@@ -37,26 +63,17 @@
                     </div>
                 </td>
             </tr>
-            <ng-container >
-                <tr *ngIf="userHasNoRoom()"> 
-                    <td colspan="2">
-                        <input class="form-control" size=10 placeholder="Enter a name for your new room..." [(ngModel)]="newRoomName" (keyup.enter)="addRoom()"/>      
+            <ng-container *ngIf="noRoomsToShow()">
+                <tr class="no-border">
+                    <td class="center" colspan="6">
+                        <p>No rooms to show :"(</p>
                     </td>
-                    <td class="align-middle">{{username}}</td>
-                    <td class="center align-middle">
-                        {{newRoomPlayers}} &nbsp;
-                        <input class="inline align-middle" type="range" min=3 max=10 [(ngModel)]="newRoomPlayers"/>&nbsp;
-                    </td>
-                    <td class="center align-middle">New</td>
-                    <td>
-                        <button class="btn btn-dark" title="Create room..." (click)="addRoom()"><span class="bi bi-plus-square-fill"></span></button>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="border:0"></td>
-                    <td style="border:0" colspan="5"><p class="text-danger m-0 w-50">{{roomError}}</p></td>
                 </tr>
             </ng-container>
+            <tr>
+                <td style="border:0"></td>
+                <td style="border:0" colspan="5"><p class="text-danger m-0 w-50">{{roomError}}</p></td>
+            </tr>
         </tbody>
     </table>
 </ng-template>

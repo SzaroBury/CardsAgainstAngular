@@ -1,11 +1,49 @@
-td.center {
-    text-align: center;
+td {
+    vertical-align: middle;
 }
 
-th.center {
-    text-align: center;
+span {
+
+    place-self: center;  
+}
+
+.center {
+    place-self: center;
 }
 
 .inline {
-    display:inline-block;
+    display: inline-block;
+}
+
+.table > :not(caption) > .no-border > * {
+    border-bottom-width: 0px;
+}
+
+.gap-top {
+    display: block;
+    padding-top: 25px;
+}
+
+.new-room-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 230px 20px 1fr 1fr;
+    gap: 10px;
+}
+
+.room-name-input {
+    align-self: center;
+}
+
+.room-players-input {
+    align-self: center
+}
+
+.new-room-header {
+    grid-column: 1/7;
+}
+
+.players-count {
+    width: 60px;
+    text-align: left;
+    padding-left: 10px;
 }

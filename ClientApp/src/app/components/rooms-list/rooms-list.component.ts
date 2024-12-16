@@ -102,6 +102,11 @@ export class RoomsListComponent implements OnInit
       
     }
 
+    noRoomsToShow(): boolean
+    {
+      return this.rooms.length == 0;
+    }
+
     userHasNoRoom(): boolean 
     {
       // console.log("userHasSomeRoom()");
