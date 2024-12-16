@@ -19,8 +19,7 @@
                 <ul class="list-group">
                     <li class="list-group-item" *ngFor="let sen of this.room.sentences; index as s;">
                         <div class="input-group my-auto">
-                            <span style="width:84%;">{{sen.value}}</span>
-                            <span style="width:8%;">({{sen.blankFields}})</span>
+                            <span style="width:92%;">{{sen.value}} ({{sen.blankFields}})</span>
                             <button class="btn-close border" (click)="removeSentence(s)"></button>
                         </div>
                     </li>
@@ -100,7 +99,7 @@
                     <li class="list-group-item" *ngFor="let card of this.room.cards; index as c;">
                         <div class="input-group my-auto">
                             <span style="width:92%;">{{card.value}}</span>
-                            <button class="btn-close" (click)="removeCard(c)"></button>
+                            <button class="btn-close border" (click)="removeCard(c)"></button>
                         </div>
                     </li>
                 </ul>
