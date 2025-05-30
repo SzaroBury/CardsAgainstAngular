@@ -1,0 +1,58 @@
+.game-config-cards {
+    border-radius: 5px 5px 0 0;
+    border: 1px solid #d6d5d5;
+    border-bottom: 0;
+    height: calc(100% - 38px);
+    overflow: hidden;
+}
+
+.game-config-cards-header {
+    font-size: 18px;
+    font-weight: bold;
+    padding: 5px;
+    background: #e9ecef;
+    border-radius: 5px 5px 0 0;
+    width: 100%;
+    height: 38px;
+}
+
+.list-group {
+    overflow-y: auto;
+    border-radius: unset;
+    height: calc(100% - 2 * (38px));
+}
+
+.list-group-item {
+    border-left: 0;
+    border-right: 0;
+}
+
+.list-group-item:first-child {
+    border-top: 0;
+}
+
+
+.list-group-item > * {
+    display: flex;
+    justify-content: space-between;
+}
+
+.list-group-item > * > span{
+    word-wrap: break-word;
+    overflow-x: hidden;
+    padding-right: 10px;
+    max-width: calc(100% - 24px);
+}
+
+.input-group > * {
+    border-radius: 0;
+}
+
+.input-group > input {
+    border-left: 0;
+}
+
+.btn-bottom {
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+}

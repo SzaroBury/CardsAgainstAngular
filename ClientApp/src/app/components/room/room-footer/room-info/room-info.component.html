@@ -1,0 +1,43 @@
+<div class="room-info bg-white border mku-root">
+    <h3>{{room()?.name}}</h3>
+    <div class="container">
+        
+        <div class="row justify-content-center">
+            <label class="col-5">Room state: </label>
+            <div class="col-5 text-center">{{roomStateToString()}}</div>
+        </div>
+        
+        <div class="row justify-content-center">
+            <label class="col-5">Game state: </label>
+            <div class="col-5 text-center">{{gameStateToString()}}</div>
+        </div>
+        
+        <div class="row justify-content-center">
+            <label class="col-5">Round: </label>
+            <div class="col-5 text-center">{{calculateRound()}}</div>
+        </div>
+        
+        <div class="row justify-content-center">
+            <label class="col-5">Score to win:</label>
+            <div class="col-5 text-center">{{calculateScoreToWin()}}</div>
+        </div>
+
+        <div class="row justify-content-center">
+            <label class="col-5">Number of players: </label>
+            <div class="col-5 text-center">{{players()}}</div>
+        </div>
+
+        <ng-container *ngIf="showFinishedButtons()" >
+            <div class="input-group justify-content-center m-1">
+                <button class="btn btn-dark col-md-5 h-50 my-auto" (click)="newGame()">New game</button>
+                <button class="btn btn-dark col-md-5 h-50 my-auto" (click)="editNewGame()">Edit settings</button>
+            </div>
+        </ng-container>
+
+        <!-- <br/> -->
+        <!-- <div class="row justify-content-center m-1">
+            <button class="btn btn-outline-dark col-4" disabled>Leave room </button>
+        </div> -->
+
+    </div>
+</div>

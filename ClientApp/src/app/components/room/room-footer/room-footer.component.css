@@ -1,0 +1,15 @@
+.room-footer {
+    display: grid;
+    grid-template-columns: 2fr 1fr 2fr;
+    box-shadow: 0px -1px 5px rgba(0, 0, 0, 0.1);
+    height: var(--room-footer-height);
+    overflow: hidden;
+    /* max-height: var(--room-footer-height); */
+}
+
+app-room-log {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}

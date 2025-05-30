@@ -1,35 +1,28 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { HubConnection } from '@microsoft/signalr';
-import { Card, ChosenCards, Game, Player } from 'src/app/model/Game';
+import { Component } from '@angular/core';
+import { ChosenCards, Player } from 'src/app/model/Game';
+import { GameService } from 'src/app/services/current-room/game/game.service';
+import { UserService } from 'src/app/services/user/user.service';
 
-//todo: convert blazor to angular
 @Component({
-  selector: 'app-game',
-  templateUrl: './game.component.html',
-  styleUrls: ['./game.component.css']
+    selector: 'app-game',
+    templateUrl: './game.component.html',
+    styleUrls: ['./game.component.css'],
+    standalone: false
 })
-export class GameComponent implements OnInit {
+export class GameComponent {
+  game = this.gameService.game;
+  user = this.userService.getCurrentUser('GameComponent');
 
-  @Input() game?: Game;
-  @Input() userId: string = "";
-  @Input() ownerId: string = "";
-  @Input() connection?: HubConnection;
-  selectedCards: Card[] = [];
-  player?: Player;
+  constructor(
+    private readonly gameService: GameService,
+    private readonly userService: UserService
+  ) {}
 
-  ngOnInit(): void 
-  {
+  winnerPlayerName(): string {
+    if(this.game()) {
+      const winnerId = this.game()?.chosenCards.find((cc: ChosenCards) => cc.winner == true)?.playerId;
+      const winner = this.game()?.players.find((pl: Player) => pl.id === winnerId);
+      return winner?.name ?? '';
+    } else return '';
   }
-
-  winnerPlayerName(): string
-  {
-    if(this.game)
-    {
-      const winnerId = this.game.chosenCards.find((cc: ChosenCards) => cc.winner == true)?.playerId;
-      const winner = this.game.players.find((pl: Player) => pl.id === winnerId);
-      if(winner) return winner.name;
-    }
-    return "";
-  }
-
 }

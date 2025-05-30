@@ -1,0 +1,54 @@
+.game-config-sentences {
+    border-radius: 5px 5px 0 0;
+    border: 1px solid #d6d5d5;
+    border-bottom: 0;
+    height: calc(100% - 38px);
+    overflow: hidden;
+}
+
+.game-config-sentences-header {
+    font-size: 18px;
+    font-weight: bold;
+    padding: 5px;
+    background: #e9ecef;
+    border-radius: 5px 5px 0 0;
+    width: 100%;
+}
+
+.list-group {
+    overflow-y: auto;
+    border-radius: unset;
+    height: 80%;
+}
+
+.list-group-item {
+    border-left: 0;
+    border-right: 0;
+}
+
+.list-group-item:first-child {
+    border-top: 0;
+}
+
+.list-group-item > * {
+    display: flex;
+    justify-content: space-between;
+}
+
+.input-group > * {
+    border-radius: 0;
+}
+
+.input-group > input {
+    border-left: 0;
+}
+
+.btn-top {
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+}
+
+.btn-bottom {
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+}

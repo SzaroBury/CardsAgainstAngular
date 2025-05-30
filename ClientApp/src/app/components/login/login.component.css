@@ -1,8 +1,8 @@
-.mku-page {
+.login {
     position: relative;
     display: flex;
     flex-direction: column;
-    margin-top: 5%;
+    padding-top: 5%;
 }
 
 main {

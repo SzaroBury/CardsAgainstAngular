@@ -1,5 +1,5 @@
-td {
-    vertical-align: middle;
+.room-list {
+    padding-top: 20px;
 }
 
 span {
@@ -7,12 +7,8 @@ span {
     place-self: center;  
 }
 
-.center {
-    place-self: center;
-}
-
-.inline {
-    display: inline-block;
+.input-group {
+    display: inline-block !important;
 }
 
 .table > :not(caption) > .no-border > * {
@@ -20,30 +16,72 @@ span {
 }
 
 .gap-top {
-    display: block;
-    padding-top: 25px;
+    padding-top: 20px;
 }
 
 .new-room-grid {
     display: grid;
-    grid-template-columns: 2fr 1fr 230px 20px 1fr 1fr;
-    gap: 10px;
+    grid-template-columns: 2fr 260px 1fr;
+    row-gap: 10px;
+    column-gap: 60px;
 }
-
-.room-name-input {
+.new-room-header {
+    grid-column: 1/4;
+}
+.new-room-name {
     align-self: center;
 }
-
-.room-players-input {
-    align-self: center
+.new-room-players {
+    align-self: center;
+    display: flex;
+    gap: 10px;
 }
-
-.new-room-header {
-    grid-column: 1/7;
+.new-room-button {
+    display: flex;
+    text-align: center;
+}
+.new-room-error {
+    font-weight: bold;
+    /* text-danger m-0 w-50 align-center justify-center */
 }
 
 .players-count {
     width: 60px;
     text-align: left;
     padding-left: 10px;
+}
+
+.rooms-grid {
+    display: grid;
+    grid-template-columns: 50px 1fr 2fr 100px 100px 150px;
+    align-items: center;
+}
+.rooms-header {
+    font-weight: bold;
+    text-align: center;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    height: 45px;
+}
+.rooms-cell {
+    border-bottom: 1px solid #dee2e6;
+    text-align: center;
+    align-content: center;
+    height: 50px;
+    padding: 10px;
+}
+.rooms-buttons {
+    padding: 0px;
+}
+.rooms-no-rooms {
+    grid-column: 1/7;
+}
+.rooms-loading {
+    grid-column: 1/7;
+    justify-self: center;
+    border-bottom: 0;
+}
+.center {
+    text-align: center;
 }

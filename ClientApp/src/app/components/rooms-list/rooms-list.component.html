@@ -1,80 +1,90 @@
-<!-- <p>To add some description.</p> -->
-
-<div *ngIf="!rooms && !userGuid; else elseBlock">
+<div *ngIf="!rooms && !user?.id; else elseBlock">
     <p><em>Loading...</em></p>
 </div>
 
 <ng-template #elseBlock>
-    <ng-container *ngIf="userHasNoRoom()">
-        <div class="new-room-grid">
-            <div class="new-room-header">
-                <h3>Create your own room</h3>
+    <div class="room-list container">
+        <ng-container *ngIf="userHasNoRoom()">
+            <div class="new-room-grid">
+                <div class="new-room-header">
+                    <h3>Create your own room</h3>
+                </div>
+                <div class="new-room-name">
+                    <input id="room-name-input" class="form-control" size=10 placeholder="Enter a name for your new room..." 
+                        [(ngModel)]="newRoomName" (keyup.enter)="addRoom()"/>      
+                </div>
+                <div class="new-room-players">
+                    <span>Max players: </span>
+                    <input id="room-capacity-input" type="range" min="3" max="10" [(ngModel)]="newRoomPlayers"/>
+                    <span>{{newRoomPlayers}}</span>
+                </div>
+                <div class="new-room-button">
+                    <button class="btn btn-dark bi-house-add-fill" title="Create room..." (click)="addRoom()">
+                        <span>
+                            <!-- <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd"
+                                    d="M8 0 a1.5 1.5 0 0 1 1.5 1.5v5h5a1.5 1.5 0 0 1 0 3h-5v5a1.5 1.5 0 0 1-3 0v-5h-5a1.5 1.5 0 0 1 0-3h5v-5A1.5 1.5 0 0 1 8 0"/>
+                            </svg> -->
+                        </span>
+                    </button>
+                    <span *ngIf="errorMessage" class="new-room-error text-danger m-0">{{errorMessage}}</span>
+                </div>
             </div>
-            <div class="room-name-input">
-                <input class="form-control" size=10 placeholder="Enter a name for your new room..." [(ngModel)]="newRoomName" (keyup.enter)="addRoom()"/>      
-            </div>
-            <div></div>
-            <div class="room-players-input">
-                <span>Max players: &nbsp;</span> 
-                <input class="inline align-middle" type="range" min=3 max=10 [(ngModel)]="newRoomPlayers"/>
-            </div>
-            <span>{{newRoomPlayers}} </span>
-            <div></div>
-            <div>
-                <button class="btn btn-dark" title="Create room..." (click)="addRoom()">
-                    <span>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M8 0 a1.5 1.5 0 0 1 1.5 1.5v5h5a1.5 1.5 0 0 1 0 3h-5v5a1.5 1.5 0 0 1-3 0v-5h-5a1.5 1.5 0 0 1 0-3h5v-5A1.5 1.5 0 0 1 8 0"/>
-                        </svg>
-                    </span>
-                </button>
-            </div>
+        </ng-container>
+    
+        <div class="d-flex justify-content-between gap-top">
+            <h3 class="">Available rooms</h3>
+            <button 
+                class="btn btn-dark bi bi-arrow-clockwise m-2"
+                title="Refresh"
+                (click)="refresh()">
+            </button>
         </div>
-    </ng-container>
-    <h3 class="gap-top">Available rooms</h3>
-    <table class="table">
-        <thead>
-            <tr>
-                <th class="center">#</th>
-                <th>Name</th>
-                <th>Players</th>
-                <th class="center">Slots</th>
-                <th class="center">Status</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody> 
-            <tr *ngFor="let room of rooms; index as r;" [ngClass]="{ 'no-border': r == rooms.length - 1 }">
-                <td class="center">{{r+1}}</td>
-                <td>{{room.name}}</td>
-                <td>
-                    <span *ngFor="let pl of room.users">{{pl.name}}<span *ngIf="room.users.indexOf(pl) !== room.users.length - 1">, </span></span>
-                </td>
-                <td class="center">{{room.users.length}}/{{room.maxPlayers}}</td>
-                <td class="center">{{roomStateToString(room.state)}}</td>
-                <td class="center">
-                    <div class="inline input-group" *ngIf="true || room.state == 1"> <!-- room.users.some(u => u.id == this.user_uuid) || room.state == 1 -->
-                        <button title="Watch (todo)" class="btn btn-dark bi bi-eye-fill" *ngIf="!isUserInRoom(room)" disabled></button> <!--href="/room/{room.id}" -->
-                        <button title="Delete" class="btn btn-dark bi bi-trash-fill" *ngIf="room.ownerGuid === userGuid" (click)="deleteRemove(room.guid)"></button>
-                        <button title="Leave (todo)" class="btn btn-dark bi bi-door-open-fill" *ngIf="isUserInRoom(room)" (click)="leaveRoom(room.guid)" disabled></button>
-                        <button title="Join" class="btn btn-dark bi bi-play-fill" *ngIf="!isUserInRoom(room)" (click)="joinRoom(room.guid)"></button>
-                        <button title="Open" class="btn btn-dark bi bi-arrow-right-square-fill" *ngIf="isUserInRoom(room)" (click)="enterRoom(room.guid)"></button>
-                        
+        
+        <div class="rooms-grid">
+            <div class="rooms-header">#</div>
+            <div class="rooms-header">Name</div>
+            <div class="rooms-header">Players</div>
+            <div class="rooms-header">Slots</div>
+            <div class="rooms-header">Status</div>
+            <div class="rooms-header"></div>
+    
+            <ng-container *ngFor="let room of rooms(); index as r;">
+                <div class="rooms-cell">{{r+1}}</div>
+                <div class="rooms-cell">{{room.name}}</div>
+                <div class="rooms-cell">
+                    <span *ngFor="let pl of room.users">{{pl.name}}
+                        <span *ngIf="room.users.indexOf(pl) !== room.users.length - 1">
+                            , 
+                        </span>
+                    </span>
+                </div>
+                <div class="rooms-cell">{{room.users.length}}/{{room.maxPlayers}}</div>
+                <div class="rooms-cell">{{roomStateToString(room.state)}}</div>
+                <div class="rooms-cell rooms-buttons">
+                    <div class="input-group" *ngIf="true || room.state == 1">
+                        <button title="Watch (todo)" class="btn btn-dark bi bi-eye-fill" *ngIf="!isUserInRoom(room)" disabled></button>
+                        <button title="Delete" class="btn btn-dark bi bi-trash-fill" *ngIf="room.ownerId === this.user?.id"
+                                (click)="deleteRoom(room.id)"></button>
+                        <button title="Leave" class="btn btn-dark bi bi-door-open-fill" *ngIf="isUserInRoom(room)"
+                                (click)="leaveRoom()"></button>
+                        <button title="Join" class="btn btn-dark bi bi-play-fill"
+                                (click)="joinRoom(room.id)"></button>
                     </div>
-                </td>
-            </tr>
-            <ng-container *ngIf="noRoomsToShow()">
-                <tr class="no-border">
-                    <td class="center" colspan="6">
-                        <p>No rooms to show :"(</p>
-                    </td>
-                </tr>
+                </div>
             </ng-container>
-            <tr>
-                <td style="border:0"></td>
-                <td style="border:0" colspan="5"><p class="text-danger m-0 w-50">{{roomError}}</p></td>
-            </tr>
-        </tbody>
-    </table>
-</ng-template>
+    
+            <ng-container *ngIf="isLoading()">
+                <div class="rooms-cell rooms-loading">
+                    <app-loading-indicator class="text-center"/>
+                </div>
+            </ng-container>
 
+            <ng-container *ngIf="noRoomsToShow()">
+                <div class="rooms-cell rooms-no-rooms">
+                    <p>No rooms to show :(</p>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+</ng-template>

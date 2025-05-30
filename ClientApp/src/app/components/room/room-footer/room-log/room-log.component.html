@@ -1,0 +1,16 @@
+<div class="room-log bg-white p-2">
+
+    <div #chatBox class="room-log-messages border p-2">
+        @if(messages()) {
+            @for (mess of messages(); track mess.id; let m = $index) {
+                <div>{{calculateMess(mess)}}</div>
+            }
+        }
+    </div>
+
+    <div class="input-group">
+        <input class="form-control" size=10 placeholder="Enter a message..." [(ngModel)]="newContent" (keyup.enter)="send()"/> 
+        <button class="btn btn-dark" type="button" id="button-addon" (click)="send()"><span class="bi bi-play-fill"></span></button>
+    </div>
+
+</div>

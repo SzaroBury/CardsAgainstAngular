@@ -1,120 +1,113 @@
-<ng-container *ngIf="room">
-    <div class="container justify-content-between mw-100">
-        <div class="row">
-    
-            <!-- SENTENCES -->
-            <div class="col-4">
-                <div class="form-group btn-top text-center" [ngClass]="{'text-danger': !isEnoughSentencesForTargetScore()}">
-                    Senteces ({{this.room.sentences.length}})
-                </div>
-    
-                <div class="form-group">
-                    <div class="input-group text-center">
-                        <input [(ngModel)]="newSentenceValue" class="form-control btn-top" style="flex-grow: 6;" size=50 type="text" 
-                                placeholder="Enter a value for the new sentence..." (keyup.enter)="addSentence(newSentenceValue)"/>
-                        <button class="form-control btn btn-dark btn-top" title="Add" (click)="addSentence(newSentenceValue)"><span class="bi bi-plus-circle-fill"></span></button>
-                    </div>
-                </div>
-    
-                <ul class="list-group">
-                    <li class="list-group-item" *ngFor="let sen of this.room.sentences; index as s;">
-                        <div class="input-group my-auto">
-                            <span style="width:92%;">{{sen.value}} ({{sen.blankFields}})</span>
-                            <button class="btn-close border" (click)="removeSentence(s)"></button>
-                        </div>
-                    </li>
-                </ul>
-    
-                <div class="input-group justify-content-center text-center">
-                    <label class="btn btn-dark btn-bottom col-md-4" title="Load from file...">
-                        <span class="bi bi-file-earmark-arrow-up-fill"></span>
-                        <input style="display:none;" type="file" (change)="loadSentences($event.target)"/>
-                    </label>
-                    <button class="btn btn-dark col mx-1" title="Clear" (click)="clearSentences()"><span class="bi bi-trash3"></span> </button>
-                    <button class="btn btn-dark btn-bottom col-md-4" title="Save to file..." (click)="saveSentences()"><span class="bi bi-file-earmark-arrow-down-fill"></span></button>
-                </div>
-            </div>
-    
-            <!-- GAME CONFIG -->
-            <div class="col container border m-4 position-relative">
-                <h5 class="text-center">Settings</h5>
-                <div class="row">
-                    <div class="game-header" id="game-header"> 
-                        <!-- Max players -->
-                        <div class="form-group row m-1">
-                            <label for="staticEmail" class="col-sm-8 col-form-label">Number of players</label>
-                            <div class="col-sm-4">
-                                <div type="text" readonly class="form-control-plaintext col-sm-8 text-center" [ngClass]="{'fw-bold text-danger' : room.users.length < 3}">{{room.users.length}} / {{room.maxPlayers}}</div>
-                            </div>
-                        </div>
-                        <!-- Cards in hand -->
-                        <div class="form-group row m-1">
-                            <label for="staticEmail" class="col-sm-8 col-form-label">Cards in hand</label>
-                            <div class="col-sm-4">
-                                <input type="number" min=1 class="form-control text-center" [(ngModel)]="cardsInHand" [ngClass]="{'is-invalid' : !isEnoughCardsForPlayers()}">
-                            </div>
-                        </div>
-                        <!-- @*Score to win*@ -->
-                        <div class="form-group row m-1">
-                            <label for="staticEmail" class="col-sm-8 col-form-label">Score to win</label>
-                            <div class="col-sm-4">
-                                <input type="number" min="1" class="form-control text-center" [(ngModel)]="scoreToWin" [ngClass]="{'is-invalid' : !isEnoughSentencesForTargetScore()}" >
-                            </div>
-                        </div>
-                        <div class="row m-3 justify-content-center text-center btn-game">
-                            <button [ngClass]="startGameConditions() ? 'btn-dark' : 'btn-outline-dark disabled'"  class="btn btn-dark" (click)="newGame()">Start game</button>
-                            <!-- 
-                            @if(Room.Players.Count > 2 && Room.Players.Count * cardsInHand <= Room.Cards.Count)
-                            {
-                                <button class="btn btn-dark btn-game" @onclick="NewGame">Start game</button>
-                            }
+<div class="game-config">
+    @if(!showDecks()) {
+        <div class="container justify-content-between mw-100 h-100">
             
-                            if(Room.Players.Count < 3)
-                            {
-                                <div class="text-danger text-wrap mt-2">You need at least 3 players to start a new game.</div>
-                            }
-            
-                            if(Room.Players.Count * cardsInHand > Room.Cards.Count)
-                            {
-                                <div class="text-danger text-wrap mt-2">Too few cards to be dealt to all players</div>
-                            }
-                            -->
-            
+            <div class="row game-settings">
+                <!-- SENTENCES -->
+                <div class="col-4 h-100">
+                    <app-game-config-sentences></app-game-config-sentences>
+                </div>
+        
+                <!-- GAME CONFIG -->
+                <div class="game-config-panel col position-relative h-100">
+                    <h3 class="text-center game-config-title">Game settings</h3>
+                    <div class="row">
+                        <!-- <div class="game-header" id="game-header">  -->
+                            <!-- Max players -->
+                            <div class="form-group row m-1">
+                                <span class="col-sm-6 col-form-label">Number of players</span>
+                                <div class="col-sm-6">
+                                    <input 
+                                        class="form-control text-center" 
+                                        type="text" 
+                                        readonly 
+                                        [value]="room()?.users?.length + '/' + room()?.maxPlayers"
+                                        [ngClass]="{'is-invalid text-danger' : !isEnoughPlayers()}"
+                                    />
+                                </div>
+                            </div>
+                            <!-- Cards in hand -->
+                            <div class="form-group row m-1">
+                                <label for="cardsInHandInput" class="w-50">Cards in hand</label>
+                                <div class="input-group w-50">
+                                    <button class="btn btn-dark bi bi-dash-lg" (click)="decreaseCardsPerHand()"></button>
+                                    <input 
+                                        id="cardsInHandInput" 
+                                        class="form-control text-center" 
+                                        type="number" 
+                                        min=1 
+                                        readonly
+                                        [value]="this.cardsPerHand()" 
+                                        [ngClass]="{'is-invalid text-danger' : !isEnoughCardsForPlayers()}"
+                                    >
+                                    <button class="btn btn-dark bi bi-plus-lg" (click)="increaseCardsPerHand()"></button>
+                                </div>
+                            </div>
+                            <!-- @*Score to win*@ -->
+                            <div class="form-group row m-1">
+                                <label for="scoreToWinInput" class="w-50">Score to win</label>
+                                <div class="w-50 input-group">
+                                    <button class="btn btn-dark bi bi-dash-lg" (click)="decreaseScoreToWin()"></button>
+                                    <input 
+                                        id="scoreToWinInput" 
+                                        class="form-control text-center" 
+                                        type="number" 
+                                        min=1 
+                                        readonly
+                                        [value]="scoreToWin()" 
+                                        [ngClass]="{'is-invalid text-danger' : !isEnoughSentencesForTargetScore()}"
+                                    >
+                                    <button class="btn btn-dark bi bi-plus-lg" (click)="increaseScoreToWin()"></button>
+                                </div>
+                            </div>
+                        <!-- </div> -->
+                    </div>
+
+                    <!-- Decks -->
+                    <div class="game-config-decks m-0 p-0">
+                        <div class="game-config-decks-panel mt-4">
+                            <div class="game-config-decks-header text-center">Decks</div>
+                            <ul class="list-group flex-grow-1">
+                                @for(deck of room()?.decks; track deck.id) {
+                                    <li class="list-group-item">
+                                        <div class="my-auto">
+                                            <span>{{deck.name}}</span>
+                                            <button class="btn-close" (click)="removeDeck(deck.id)"></button>
+                                        </div>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                        <div class="btn-group w-100">
+                            <button class="btn btn-dark btn-bottom bi bi-boxes" title="Browse decks" (click)="loadDecks()"></button>
+                            <button class="btn btn-dark btn-bottom bi bi-plus-square-fill" disabled title="Save as a new deck (todo)"></button>
                         </div>
                     </div>
-                </div>
-            </div>
-    
-            <!-- @*CARDS*@ -->
-            <div class="col-4">
-                <div class="text-center" [ngClass]="{'text-danger': !isEnoughCardsForPlayers()}">Cards ({{this.room.cards.length}})</div>
-                <div class="form-group">
-                    <div class="input-group mt-2">
-                        <input [(ngModel)]="newCard" class="form-control btn-top" style="flex-grow: 6;" type="text" size=50 
-                                placeholder="Enter a value for the new card..." (keyup.enter)="addCard(newCard)"/>
-                        <button class="form-control btn btn-dark btn-top" type="button" (click)="addCard(newCard)"><span class="bi bi-plus-circle-fill"></span></button>
+
+                    <!-- Buttons -->
+                    <div class="row justify-content-center text-center">
+                        <!-- <button class='btn btn-dark mt-2' ">Browse decks</button>
+                        @if(!showNewDeckInput()) {
+                            <button class='btn btn-dark mt-2' (click)="showNewDeckInput.set(true)">Save as a new deck...</button>
+                        } @else {
+                            <div class="input-group w-100  mt-2">
+                                <input class="form-control" type="text" placeholder="Type a name for the deck..." />
+                                <button class="btn btn-dark bi bi-plus-circle-fill"></button>
+                                <button class="btn btn-dark bi bi-x-lg" (click)="showNewDeckInput.set(false)"></button>
+                            </div>
+                        } -->
+                        <button [ngClass]="startGameConditions() ? 'btn-dark' : 'btn-outline-dark disabled'"  class="btn btn-dark mt-2" (click)="newGame()">Start game</button>
+                        <div *ngIf="isError()" class="text-danger">{{this.error?.detail}}</div>            
                     </div>
                 </div>
-                <ul class="list-group">
-                    <li class="list-group-item" *ngFor="let card of this.room.cards; index as c;">
-                        <div class="input-group my-auto">
-                            <span style="width:92%;">{{card.value}}</span>
-                            <button class="btn-close border" (click)="removeCard(c)"></button>
-                        </div>
-                    </li>
-                </ul>
-    
-                <div class="form-group">
-                    <div class="input-group justify-content-center">
-                        <label class="btn btn-dark btn-bottom col-md-4" title="Load from file...">
-                            <span class="bi bi-file-earmark-arrow-up-fill"></span>
-                            <input style="display:none;" type="file" (change)="loadCards($event.target)">
-                        </label>
-                        <button class="btn btn-dark col mx-1" title="Clear" (click)="clearCards()"><span class="bi bi-trash3"></span></button>
-                        <button class="btn btn-dark btn-bottom col-md-4" title="Save to file..." (click)="saveCards()"><span class="bi bi-file-earmark-arrow-down-fill"></span></button>
-                    </div>
+        
+                <!-- @*CARDS*@ -->
+                <div class="col-4 h-100">
+                    <app-game-config-cards class="d-block h-100" [isEnoughCards]="isEnoughCardsForPlayers()"></app-game-config-cards>
                 </div>
             </div>
         </div>
-    </div>
-</ng-container>
+    } @else {
+        <app-decks-browser (closeDecks)="handleCloseDecks()"/>
+    }
+</div>

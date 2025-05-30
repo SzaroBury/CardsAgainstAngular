@@ -1,20 +1,25 @@
-<div class="mku-board border">
+<div class="game-board">
     <ng-container *ngIf="game">
-        <ng-container *ngFor="let cardSet of game.chosenCards; index as cs;">
+        @for(cardSet of game()?.chosenCards; track cardSet.id) {
             <!-- ShowCards --> 
-            <div class="border card-set" [ngClass]="{
-                'mku-cardset-selected': isSelected(cardSet), 
-                'card-set-pickable': isPickable(cardSet),
-                'mku-cardset-winner': cardSet.winner
-            }" (click)="selectCard(cardSet)">
-                <ng-container *ngFor="let card of cardSet.cards; index as c;">
-                    <p class="card" [ngClass]="{'card-selected': isSelected(cardSet),'card-winner': isWinner(cardSet)}">
-                        <ng-container *ngIf="ifShowValues()">
+            <div 
+                class="card-set" 
+                [ngClass]="{
+                    'card-set-selected': isSelected(cardSet), 
+                    'card-set-pickable': isPickable(cardSet),
+                    'card-set-winner': cardSet.winner
+                }" 
+                (click)="selectCard(cardSet)"
+            >
+                @for(card of cardSet.cards; track card.id) {
+                    <p class="card" [ngClass]="{'card-selected': isSelected(cardSet),'card-winner': cardSet.winner}">
+                        @if(ifShowValues()) {
                             {{card.value}}
-                        </ng-container>
+                        }
                     </p>  
-                </ng-container>
+
+                }
             </div>    
-        </ng-container>
+        }
     </ng-container>
 </div> 

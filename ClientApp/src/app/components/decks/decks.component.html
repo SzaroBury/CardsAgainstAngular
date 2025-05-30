@@ -1,0 +1,78 @@
+@if(decks) {
+    <div class="container">
+
+        <h3 class="gap-top">Available decks</h3>
+        <div class="decks-grid">
+            <div class="decks-header">#</div>
+            <div class="decks-header">Name</div>
+            <div class="decks-header">Author</div>
+            <div class="decks-header">Language</div>
+            <div class="decks-header">Sentences</div>
+            <div class="decks-header">Cards</div>
+            <div class="decks-header"></div>
+    
+            <ng-container *ngFor="let deck of decks; index as s;">
+                <div class="decks-row">
+                    <div class="decks-cell">{{s+1}}.</div>
+                    <div class="decks-cell">{{deck.name}}</div>
+                    <div class="decks-cell">{{deck.authorUsername}}</div>
+                    <div class="decks-cell">{{deck.language}}</div>
+                    <div class="decks-cell">{{deck.sentences.length}}</div>
+                    <div class="decks-cell">{{deck.cards.length}}</div>
+                    <div class="decks-cell decks-buttons">
+                        <div class="inline input-group">
+                            <button 
+                                [title]="this.openedDeckId === deck.id ? 'Close' : 'Browse'" 
+                                [ngClass]="this.openedDeckId === deck.id ? 'bi-zoom-out' : 'bi-zoom-in'"
+                                class="btn btn-dark bi"
+                                (click)="browseDeck(deck.id)">
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                @if(openedDeckId === deck.id) {
+                    <div class="decks-browser" @slideToggle>
+                        <div class="w-100">
+                            <ul class="list-group">
+                                <li class="list-group-header text-center">Sentences</li>
+                                @for(sen of deck.sentences; track sen.id) {
+                                    <li class="list-group-item">
+                                        <div class="input-group my-auto">
+                                            <span class="w-100">{{sen.value}} ({{sen.blankFields}})</span>
+                                        </div>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                        <div class="w-100">
+                            <!-- <div class="list-group-header text-center">
+                                Cards
+                            </div> -->
+                            <ul class="list-group text-center">
+                                <li class="list-group-header text-center">Cards</li>
+                                @for(card of deck.cards; track card.id) {
+                                    <li class="list-group-item">
+                                        <div class="input-group my-auto text-center">
+                                            <span class="w-100">{{card.value}}</span>
+                                        </div>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                }
+    
+            </ng-container>
+        
+            <ng-container *ngIf="noDecksToShow()">
+                <div class="decks-cell decks-no-decks">
+                    <p>No decks to show :(</p>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+} @else {
+    <div class="w-100 h-100 text-center">
+        <app-loading-indicator/>
+    </div>
+}

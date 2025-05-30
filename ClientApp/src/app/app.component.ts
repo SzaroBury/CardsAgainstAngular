@@ -1,35 +1,21 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from './services/user.service';
-import { Observer, Subject } from './helpers/observer';
+import { UserService } from './services/user/user.service';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html'
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    standalone: false
 })
-export class AppComponent implements OnInit, Observer
+export class AppComponent implements OnInit
 {
-  authentication: boolean = false;
+  authenticated = this.userService.isLogged;
   title = 'app';
 
-  constructor(private userService : UserService) {}
+  constructor(
+    private userService : UserService
+  ) {}
 
-  ngOnInit(): void 
-  {
-    this.update(this.userService);
-    this.userService.attach(this);
+  ngOnInit(): void {
+    this.userService.checkAuthentication();
   }
-
-  update(subject: Subject): void
-  {
-    if (subject instanceof UserService) 
-    {
-      console.log('AppComponent: Reacted to the event.');
-      this.userService.checkIfLogged().subscribe({
-        next: result => { 
-          this.authentication = result;
-        } 
-      });
-    }
-  }
-
 }

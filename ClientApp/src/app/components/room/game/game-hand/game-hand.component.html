@@ -1,37 +1,10 @@
 <div class="card-container hand">
-    
-    <ng-container *ngFor="let card of game!.players[playerIndex].hand; index as c;">
-        <p (click)="selectUnselectCard(card)" class="card" 
+    @for(card of hand(); track card.id; let c = $index) {
+        <div (click)="selectUnselectCard(card)" class="card" 
             [ngClass]="{
             'card-selected': isSelected(card), 
             'card-pickable': isPickable(card),
-            'mku-card-char': isCardChar()
-        }">{{card.value}}</p>
-    </ng-container>
-
+            'card-char': isCardChar()
+        }">{{card.value}}</div>
+    }
 </div>
-
-<!-- @foreach(var card in Room.Game.Players.Find(p => p.Id == userId).Hand )
-{
-    if (Room.Game.State == GameState.PickCards
-    && Room.Game.ChooserId != userId
-    && !Room.Game.ChosenCards.Exists(cs => cs.PlayerId == userId))
-    {
-        if(Selected.Exists(c => c.Id == card.Id))
-        {
-            <p @onclick="()=>UnselectCard(card)" class="card card-pickable card-selected">@card.Value</p>
-        }
-        else if(Selected.Count < Room.Game.CurrentSentence.BlankFields)
-        {
-            <p @onclick="()=>SelectCard(card)" class="card card-pickable">@card.Value</p>
-        }
-        else
-        {
-            <p class="card">@card.Value</p>
-        }
-    }
-    else
-    {                    
-        <p class="card">@card.Value</p>
-    }
-} -->

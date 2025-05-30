@@ -1,53 +1,30 @@
-<ng-container *ngIf="(room$ | async) as room; else loading">
-    
-    <!-- game -->
-    <div class="h-75">
-
-        <!-- before game start -->
-        <ng-container *ngIf="room.state === 0">
-
-            <ng-container *ngIf="room.ownerGuid == this.userGuid">
-                <app-game-config [room]="room" [userId]="userGuid" [connection]="connection"></app-game-config>
-            </ng-container>
-
-            <ng-container *ngIf="room.ownerGuid != this.userGuid && isUserRoomPlayer(room.users)">
-                <div class="text-center mku-gameinfo"><h5>Wait for owner of the room to start a new game.</h5></div>  
-            </ng-container>
-
-            <ng-container *ngIf="room.ownerGuid == this.userGuid && !isUserRoomPlayer(room.users)">
-                <div>You are in the observer mode.</div>
-                <div>todo: Join button</div>
-            </ng-container>
-
-        </ng-container>
-
-        <!-- ingame -->
-        <ng-container *ngIf="room.state === 1 || room.state === 2">    
-            <app-game [game]="room.game" [userId]="userGuid" [ownerId]="room.ownerGuid" [connection]="connection"></app-game>
-        </ng-container>
-        
-    </div>
-    
-    <!-- room footer -->
-    <ng-container>
-        <div class="fixed-bottom mx-5">
-            <hr/>
-            <div class="row">
-                <!-- @*scoreboard*@ -->
-                <app-players-list class="col-md-4 h-100" [room]="room" [userId]="userGuid" [isOwner]="isUserRoomOwner(room)"></app-players-list>
+<div class="room">
+    @if(room())
+    {
+        <div class="room-main">
+            <div class="container h-100">   
+                <!-- before game start -->
+                @if(room()?.state === 0) {
+                    @if(isOwner()) {
+                        <app-game-config class="d-block h-100"></app-game-config>
+                    }@else if(isInRoom()) {
+                        <div class="room-status-message text-center"><h5>Wait for owner of the room to start a new game.</h5></div>  
+                    } @else {
+                        <div class="room-status-message text-center">You are in the observer mode. todo: Join button</div>
+                    }
+                }
                 
-                <!-- @*room info*@ -->
-                <app-room-info class="col-md-4" [room]="room" [userId]="userGuid" [connection]="connection"></app-room-info>
-                
-                <!-- @*log*@  -->
-                <app-room-log class="col-md-4" [room]="room" [userId]="userGuid" [connection]="connection"></app-room-log>
+                <!-- ingame -->
+                @if(room()?.state === 1 || room()?.state === 2) {
+                    <app-game class="d-block h-100"></app-game>
+                }
             </div>
-        </div> 
-    </ng-container>
-
-</ng-container>
-
-
-<ng-template #loading>
-    Loading stuff...
-</ng-template>
+        </div>
+        <!-- <hr/> -->
+        <app-room-footer/>
+    } @else {
+        <div class="d-flex justify-content-center mt-5">
+            <app-loading-indicator/>
+        </div>
+    }
+</div>

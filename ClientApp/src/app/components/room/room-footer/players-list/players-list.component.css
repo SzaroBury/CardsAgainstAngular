@@ -1,0 +1,48 @@
+.players-list {
+    border: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color);
+    border-right: 0;
+    border-left: 0;
+    height: 100%;
+}
+
+.grid-table {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    gap: 10px;
+}
+
+.grid-header,
+.grid-row {
+    display: contents;
+}
+
+.grid-header > div,
+.grid-row > div {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.grid-header {
+    font-weight: bold;
+    background-color: #f1f1f1;
+}
+
+.player-score {
+    display: flex;
+    justify-content: center;    
+}
+
+.owner-buttons {
+    display: flex;
+    justify-content: center;
+}
+
+.input-group {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+}
+
+.text-center {
+    text-align: center;
+}

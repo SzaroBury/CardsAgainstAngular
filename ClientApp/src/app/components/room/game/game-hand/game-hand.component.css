@@ -1,36 +1,40 @@
-.card {
-    border-width: medium;
-    border-color: black;
-    margin: 5px;
-    width: 200px;
-    height: 70px;
-    justify-content: center;
-    text-align: center;
-}
-
 .card-container {
     display: flex;
     justify-content: center;
     overflow-x: auto;
-    overflow-y: clip;
     align-items: center;
-    height: 25%;
-    max-height: 25%;
-    margin-top: 30px;
+    height: 100%;
+}
+
+.card {
+    border-width: medium;
+    border-color: black;
+    padding: 10px 25px 10px 25px;
+    margin: 5px;
+    /* width: fit-content;
+    height: fit-content; */
+    justify-content: center;
+    text-align: center;
+    user-select: none;
+    word-wrap: normal;
+    display: flex;
+    max-width: 1000%;
+    overflow-x: auto;
 }
 
 .card-pickable {
-    transition: transform 0.2s;
+    transition: transform 0.5s;
 }
 
 .card-pickable:hover{
     border-width: thick;
     transform: translateY(-5px);
+    cursor: pointer;
     /* animation: slideUp 0.2s ease-in-out; */
 }
 
 .card-pickable:not(:hover) {
-    animation: slideDown 0.2s ease-in-out;
+    animation: slideDown 0.5s ease-in-out;
   }
 
 .card-selected{
@@ -39,7 +43,7 @@
     transform: translateY(-5px);
 }
 
-.mku-card-char{
+.card-char{
     background-color: rgb(253, 253, 253);
     transform: translateY( 5px );
     border-width: thin;

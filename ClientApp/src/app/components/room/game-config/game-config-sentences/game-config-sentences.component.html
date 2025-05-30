@@ -1,0 +1,33 @@
+<div class="game-config-sentences">
+    <div class="game-config-sentences-header text-center" [ngClass]="{'text-danger': !isEnoughSentencesForTargetScore()}">
+        Senteces ({{ sentences()?.length }})
+    </div>
+
+    <div class="form-group">
+        <div class="input-group text-center">
+            <input [(ngModel)]="newSentenceValue" class="form-control btn-top" style="flex-grow: 6;" size=50 type="text" 
+                    placeholder="Enter a value for the new sentence..." (keyup.enter)="addSentence(newSentenceValue)"/>
+            <button class="form-control btn btn-dark btn-top" title="Add" (click)="addSentence(newSentenceValue)"><span class="bi bi-plus-square-fill"></span></button>
+        </div>
+    </div>
+    
+    <ul class="list-group">
+        @for(sen of sentences(); track sen.id) {
+            <li class="list-group-item">
+                <div class="my-auto">
+                    <span>{{sen.value}} ({{sen.blankFields}})</span>
+                    <button class="btn-close" (click)="removeSentence(sen.id)"></button>
+                </div>
+            </li>
+        }
+    </ul>
+</div>
+
+<div class="btn-group w-100">
+    <label class="btn btn-dark btn-bottom" title="Load from file...">
+        <span class="bi bi-file-earmark-arrow-up-fill"></span>
+        <input style="display:none;" type="file" (change)="loadSentences($event.target)"/>
+    </label>
+    <button class="btn btn-dark" title="Clear" (click)="clearSentences()"><span class="bi bi-trash3"></span> </button>
+    <button class="btn btn-dark btn-bottom" title="Save to file..." (click)="saveSentences()"><span class="bi bi-file-earmark-arrow-down-fill"></span></button>
+</div>

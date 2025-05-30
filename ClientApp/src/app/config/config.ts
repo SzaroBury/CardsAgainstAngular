@@ -9,7 +9,7 @@ export class AppConfig
     {
         this._config = 
         { 
-            PathAPI: 'http://localhost:5105/api/' 
+            PathAPI: 'https://localhost:7214/api/' 
         };
     }
 

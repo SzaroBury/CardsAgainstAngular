@@ -1,0 +1,94 @@
+<div class="decks">
+    <div>
+        <h3 class="decks-header">Available decks</h3>
+        <div class="decks-grid">
+            <div class="decks-grid-header">#</div>
+            <div class="decks-grid-header">Name</div>
+            <div class="decks-grid-header">Author</div>
+            <div class="decks-grid-header">Language</div>
+            <div class="decks-grid-header">Sentences</div>
+            <div class="decks-grid-header">Cards</div>
+            <div class="decks-grid-header"></div>
+        
+            @for (deck of decks(); track deck.id; let d = $index) {
+                <div class="decks-row">
+                    <div class="decks-cell">{{d+1}}.</div>
+                    <div class="decks-cell">{{deck.name}}</div>
+                    <div class="decks-cell">{{deck.authorUsername}}</div>
+                    <div class="decks-cell">{{deck.language}}</div>
+                    <div class="decks-cell">{{deck.sentences.length}}</div>
+                    <div class="decks-cell">{{deck.cards.length}}</div>
+                    <div class="decks-cell decks-buttons">
+                        <div class="inline input-group">
+                            <button 
+                                [title]="openedDeckId() === deck.id ? 'Close' : 'Browse'" 
+                                class="btn btn-dark bi"
+                                [ngClass]="openedDeckId() === deck.id ? 'bi-zoom-out' : 'bi-zoom-in'"
+                                (click)="browseDeck(deck.id)">
+                            </button>
+                            <button 
+                                class="btn btn-dark bi bi-x-lg"
+                                [disabled]="!selectedDecks().includes(deck.id)" 
+                                (click)="uncheckDeck(deck.id)"
+                                title="Uncheck">
+                            </button>                    
+                            <button 
+                                class="btn btn-dark bi bi-check-lg"
+                                [disabled]="selectedDecks().includes(deck.id)" 
+                                (click)="checkDeck(deck.id)"
+                                title="Check">
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                @if(openedDeckId() === deck.id) {
+        
+                    <div class="decks-browser" @slideToggle>
+                        <div class="w-100">
+                            <ul class="list-group">
+                                <li class="list-group-header text-center">Sentences</li>
+                                @for(sen of deck.sentences; track sen.id) {
+                                    <li class="list-group-item">
+                                        <div class="input-group my-auto">
+                                            <span class="w-100">{{sen.value}} ({{sen.blankFields}})</span>
+                                        </div>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                        <div class="w-100">
+                            <ul class="list-group text-center">
+                                <li class="list-group-header text-center">Cards</li>
+                                @for(card of deck.cards; track card.id) {
+                                    <li class="list-group-item">
+                                        <div class="input-group my-auto text-center">
+                                            <span class="w-100">{{card.value}}</span>
+                                        </div>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                }
+            }
+        
+            @if(this.decks().length === 0) {
+                <div class="decks-cell decks-no-decks">
+                    <p>No decks to show :(</p>
+                </div>
+            }
+        
+        </div>
+    </div>
+    <div class="decks-browser-buttons">
+        <button class="btn btn-dark" (click)="cancel()">Cancel</button>
+        <span>
+            @if(selectedDecks().length === 0) {
+                Check at least one deck
+            } @else {
+                {{selectedDecks().length}} deck{{selectedDecks().length > 1 ? 's' : '' }} selected
+            }
+        </span>
+        <button class="btn btn-dark" (click)="loadDecks()" [disabled]="selectedDecks().length === 0">Load</button>
+    </div>
+</div>

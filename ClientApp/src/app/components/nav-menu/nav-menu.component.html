@@ -1,6 +1,6 @@
 <header>
   <nav
-    class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3"
+    class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow"
   >
     <div class="container">
       
@@ -20,19 +20,16 @@
       <div class="navbar-collapse collapse d-sm-inline-flex" [ngClass]="{ show: isExpanded }">
         
         <ul class="navbar-nav flex-grow">
-          <div class="justify-content-start">
-            <ng-container *ngIf="authentication">
-              <li class="nav-item" [routerLinkActive]="['link-active']"><a class="nav-link text-dark" [routerLink]="['/rooms']">Rooms</a></li>
-            </ng-container>
-          </div>
+            <li class="justify-content-start">
+              <div class="nav-item" [routerLinkActive]="['link-active']"><a class="nav-link text-dark" [routerLink]="['/rooms']">Rooms</a></div>
+            </li>
+            <li class="nav-item" [routerLinkActive]="['link-active']"><a class="nav-link text-dark" [routerLink]="['/decks']">Decks</a></li>
         </ul>
       
         <div class="ms-auto">
           <ul class="navbar-nav">
-            <ng-container *ngIf="authentication">
-              <li class="nav-item"><a class="nav-link text-dark">Logged as {{username}}</a></li>
-              <li class="nav-item"><a class="nav-link text-dark" (click)="logout()">Logout</a></li>
-            </ng-container>
+            <li class="nav-item"><a class="nav-link text-dark">{{ user()?.name ?? '' }}</a></li>
+            <li class="nav-item"><a class="ms-4 btn btn-dark" (click)="logout()">Logout</a></li>
           </ul>
         </div>
       

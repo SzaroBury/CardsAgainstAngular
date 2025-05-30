@@ -1,9 +1,6 @@
-<body>
-  <div *ngIf="authentication">
-    <app-nav-menu></app-nav-menu>
-    <main class="container">
-      <router-outlet></router-outlet>
-    </main>
-  </div>
-  <div *ngIf="!authentication"><app-login></app-login></div>
-</body>
+@if(authenticated()) {
+  <app-nav-menu></app-nav-menu>
+  <router-outlet></router-outlet>
+} @else {
+  <app-login></app-login>
+}

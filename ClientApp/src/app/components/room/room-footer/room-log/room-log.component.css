@@ -1,0 +1,20 @@
+.room-log{
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    min-height: 0;
+    overflow: hidden;
+    /* height: 100%; */
+    border: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color);
+    border-right: 0;
+    border-left: 0;
+}
+
+.room-log-messages{
+    flex-grow: 1;
+    min-height: 0;
+    overflow-y: auto; 
+    /* overflow-anchor: auto; */
+    background-color:rgb(238, 238, 238);
+    margin: 5px 2px 0 2px;
+}

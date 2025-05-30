@@ -1,59 +1,31 @@
-import { User } from "./User";
+import { Card } from "./Card";
+import { ChosenCards } from "./ChosenCards";
+import { Player } from "./Player";
+import { Sentence } from "./Sentence";
 
-export class Game
-{
+export class Game {
   round : number = -1;
-  cardsInHand : number = 3;
-  scoreToWin: number = 3;
-  cardsConfirmed: boolean = false;
+  cardsPerHand? : number;
+  scoreToWin?: number;
   
   roomId: string = "";
   chooserId : string = "";
   
   state : GameState = 0;
-  currentSentence : Sentence = new Sentence();
+  currentSentence = new Sentence();
   
   players : Player[] = [];
-  gameSentences : Sentence[] = [];
-  gameCards : Card[] = [] 
-  selectedCards : Card[] = [];
-  chosenCards : ChosenCards[] = [];
-  selectedCardsSet?: ChosenCards;
+  chosenCards : ChosenCards[] = []; 
+  selectedCards : Card[] = []; //to remove, store in a component
+  selectedCardsSet?: ChosenCards; //to remove, store in a component
 }
 
-export class Sentence
-{
-  id : number = -1;
-  value : string = "";
-  blankFields : number = -1;
+export enum GameState {
+  "Not started",
+  "Picking cards",
+  "Showing cards",
+  "Showing winner",
+  "Finished"
 }
 
-export class ChosenCards
-{
-  id: number = -1;
-  playerId : string = "";
-  cards : Card[] = [];
-  winner: boolean = false;
-}
-
-export interface Card
-{
-  id : number;
-  value : string
-}
-
-
-export interface Player extends User
-{
-  id: string;
-  hand : Card[];
-  score : number;
-}
-
-export enum GameState
-{
-  "Pick cards",
-  "Show cards",
-  "Show winner",
-  Finished
-}
+export { Card, Sentence, ChosenCards, Player };

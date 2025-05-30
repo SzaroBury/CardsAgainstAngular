@@ -1,6 +1,87 @@
-.btn-top {
-    border-bottom-left-radius: 0px;
-    border-bottom-right-radius: 0px;
+.game-config {
+    height: 100%;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.game-config-title {
+    padding-top: 10px;
+    padding-bottom: 20px;
+}
+
+.game-settings {
+    height: calc(100%);
+}
+
+.game-config-panel {
+    border-radius: .375rem;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    position: relative;
+}
+
+.game-config-panel > .row {
+    flex: 0 0 auto;
+}
+
+.game-config-decks {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    flex: 1 1 auto; /* ten środkowy row rośnie do dostępnej wysokości */
+    min-height: 0;  /* pozwala na poprawne przewijanie dzieci */
+    overflow: auto; /* opcjonalnie, jeśli chcesz przewijanie */
+}
+
+.game-config-decks-panel {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    border-radius: 5px 5px 0 0;
+    border: 1px solid #d6d5d5;
+    border-bottom: 0;
+    min-height: 60%;
+    overflow: hidden;
+    --top-and-bottom-heigths: 38px;
+}
+
+.game-config-decks-header {
+    font-size: 18px;
+    font-weight: bold;
+    padding: 5px;
+    background: #e9ecef;
+    border-radius: 5px 5px 0 0;
+    width: 100%;
+    height: var(--top-and-bottom-heigths);
+}
+
+.list-group {
+    flex-grow: 1;
+    overflow-y: auto;
+    border-radius: unset;
+    height: calc(100% - 38px);
+}
+
+.list-group-item {
+    border-left: 0;
+    border-right: 0;
+}
+
+.list-group-item:first-child {
+    border-top: 0;
+}
+
+.list-group-item > * {
+    display: flex;
+    justify-content: space-between;
+}
+
+.list-group-item > * > span{
+    word-wrap: break-word;
+    overflow-x: hidden;
+    padding-right: 10px;
+    max-width: calc(100% - 24px);
 }
 
 .btn-bottom {
@@ -8,25 +89,10 @@
     border-top-right-radius: 0px;
 }
 
-.btn-game {
+.start-game-btn {
     position: absolute;
-    bottom: 10px;
-    width: 80%;
-    left: 5%;
-}
-
-/*.game-header {
-    display: flex;
-    justify-content: space-between
-}*/
-
-.list-group {
-    max-height: 49vh;
-    height: 49vh;
-    overflow-y: auto;
-    border-radius: unset;
-    border-left: 1px solid #d6d5d5;
-    border-right: 1px solid #d6d5d5;
+    bottom: 0;
+    width: calc(100% - 2 * var(--bs-gutter-x));;
 }
 
 /* Track */

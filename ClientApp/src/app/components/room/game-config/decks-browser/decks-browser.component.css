@@ -1,0 +1,124 @@
+.decks {
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+}
+
+.decks-grid {
+    display: grid;
+    grid-template-columns: 50px 2fr 2fr 1fr 1fr 1fr 1fr;
+    align-items: center;
+    border-bottom: 1px solid #dee2e6;
+    max-height: 90%;
+    overflow: auto;
+    scrollbar-gutter: stable;
+}
+
+.decks-header {
+    margin-bottom: 20px;
+    justify-self: center;
+}
+
+.decks-grid-header {
+    font-weight: bold;
+    text-align: center;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    height: 45px;
+}
+.decks-row {
+    display: grid;
+    grid-template-columns: 50px 2fr 2fr 1fr 1fr 1fr 1fr;
+    border-top: 1px solid #dee2e6;
+    grid-column: 1/8;
+}
+
+.decks-cell {
+    text-align: center;
+    align-content: center;
+    height: 50px;
+    padding: 10px;
+}
+.decks-buttons {
+    justify-self: center;
+    padding: 0px;
+}
+
+.decks-browser {
+    grid-column: 1/8;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    /* justify-items: center; */
+    gap: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    /* border-radius: 0 0 8px 8px; */
+}
+
+.decks-browser-buttons {
+    grid-column: 1/8;
+    display: flex;
+    align-content: center;
+    align-items: center;
+    justify-content: center;
+    margin: 10px;
+    text-align: center;
+}
+
+.decks-browser-buttons > * {
+    margin: 0 10px;
+    width: 300px;
+}
+
+.decks-browser-buttons > p {
+    align-self: center;
+}
+
+.list-group-header {
+    font-size: 18px;
+    font-weight: bold;
+    padding: 10px;
+    background: #e9ecef;
+    border-radius: 5px 5px 0 0;
+    width: 100%;
+}
+
+.list-group {
+    width: 100%;
+    overflow-y: auto;
+    background: white;
+    border-radius: 5px;
+    border-left: 1px solid #d6d5d5;
+    border-right: 1px solid #d6d5d5;
+    border-bottom: 1px solid #d6d5d5;
+    padding: 5px;
+    max-height: 300px;
+}
+
+.list-group-item {
+    padding: 10px;
+    border-bottom: 1px solid #dee2e6;
+    font-size: 14px;
+}
+
+.list-group-item:first-child {
+    border-top: none;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+.list-group-item:last-child {
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.list-group-item:last-child {
+    border-bottom: none;
+}
+
+.decks-no-decks {
+    grid-column: 1/8;
+}

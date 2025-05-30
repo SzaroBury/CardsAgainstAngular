@@ -1,0 +1,33 @@
+<div class="players-list px-3 py-1">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Username</th>
+                <th class="text-center">Score</th>
+                @if(isOwner()) {
+                    <th class="text-center">Actions</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @for(user of room()?.users; track user.id; let u = $index) {
+                <tr>          
+                    <td><div>{{u + 1}}.</div></td>
+                    <td><div [ngClass]="{ 'fw-bold': user.id === currentUser?.id }">{{calculateUserName(user)}}</div>
+                    <td><div class="player-score">{{getPlayerScore(user.id)}}</div></td>
+                    @if(isOwner()) {
+                        <td class="text-center">
+                            <div class="owner-buttons input-group">
+                                @if(user.id !== currentUser?.id) {
+                                    <button title="Ban user" class="btn btn-dark btn-sm bi bi-dash-circle"></button>
+                                    <button title="Kick user" class="btn btn-dark btn-sm bi bi-trash-fill"></button>
+                                }
+                            </div>
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

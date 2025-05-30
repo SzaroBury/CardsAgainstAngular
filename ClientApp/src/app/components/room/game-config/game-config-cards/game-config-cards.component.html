@@ -1,0 +1,33 @@
+<div class="game-config-cards">
+    <div class="game-config-cards-header text-center" [ngClass]="{'text-danger': !isEnoughCards()}">
+        Cards ({{ cards()?.length ?? 0}})
+    </div>
+
+    <div class="form-group">
+        <div class="input-group">
+            <input [(ngModel)]="newCard" class="form-control" style="flex-grow: 6;" type="text" size=50 
+                    placeholder="Enter a value for the new card..." (keyup.enter)="addCard(newCard)"/>
+            <button class="form-control btn btn-dark" type="button" (click)="addCard(newCard)"><span class="bi bi-plus-square-fill"></span></button>
+        </div>
+    </div>
+
+    <ul class="list-group">
+        @for(card of cards(); track card.id) {
+            <li class="list-group-item">
+                <div class="my-auto">
+                    <span>{{card.value}}</span>
+                    <button class="btn-close" (click)="removeCard(card.id)"></button>
+                </div>
+            </li>
+        }
+    </ul>
+</div>
+
+<div class="btn-group w-100">
+    <label class="btn btn-dark btn-bottom" title="Load from file...">
+        <span class="bi bi-file-earmark-arrow-up-fill"></span>
+        <input style="display:none;" type="file" (change)="loadCards($event.target)">
+    </label>
+    <button class="btn btn-dark" title="Clear" (click)="clearCards()"><span class="bi bi-trash3"></span></button>
+    <button class="btn btn-dark btn-bottom" title="Save to file..." (click)="saveCards()"><span class="bi bi-file-earmark-arrow-down-fill"></span></button>
+</div>

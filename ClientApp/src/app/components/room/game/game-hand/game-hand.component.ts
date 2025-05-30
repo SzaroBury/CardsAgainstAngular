@@ -1,78 +1,36 @@
-import { Component, Input, OnInit, Output } from '@angular/core';
-import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
-import { Card, ChosenCards, Game, Player } from 'src/app/model/Game';
+import { Component} from '@angular/core';
+import { Card} from 'src/app/model/Game';
+import { GameService } from 'src/app/services/current-room/game/game.service';
+import { UserService } from 'src/app/services/user/user.service';
 
 @Component({
-  selector: 'app-game-hand',
-  templateUrl: './game-hand.component.html',
-  styleUrls: ['./game-hand.component.css']
+    selector: 'app-game-hand',
+    templateUrl: './game-hand.component.html',
+    styleUrls: ['./game-hand.component.css'],
+    standalone: false
 })
-export class GameHandComponent implements OnInit {
-  
-  @Input() game?: Game;
-  @Input() userId?: string;
-  playerIndex: number = -1;
-  hand?: Card[] = [];
+export class GameHandComponent {
+  // room = this.currentRoomService.getCurrentRoom();
+  user = this.userService.getCurrentUser('GameHandComponent');
+  hand = this.gameService.handCards;
+  selectedCards: Card[] = [];
 
-  ngOnInit(): void {
-    if(this.game)
-    {
-      this.playerIndex = this.game.players.findIndex((player: Player) => player.id === this.userId);
-    }
+  constructor(
+    private readonly gameService: GameService,
+    private readonly userService: UserService
+  ) {}
+
+  isCardChar = () => this.gameService.isCardChar();
+
+  isSelected(card: Card): boolean {
+    return this.gameService.selectedCards().some((c: Card) => c.id === card.id);
   }
 
-  isCardChar(): boolean
-  {
-    if(this.game)
-    {
-      return this.game.chooserId === this.userId;
-    }
-
-    return false;
+  isPickable(card: Card): boolean {
+    return this.gameService.isCardPickable(card);
   }
 
-  isSelected(card: Card): boolean
-  {
-    const result = this.game?.selectedCards.some((c: Card) => c.id === card.id);
-    if(result) return result;
-    else return false;
-  }
-
-  isPickable(card: Card): boolean
-  {
-    if(this.game && !this.isCardChar() && this.game.state == 0)
-    {
-      if(!this.game.cardsConfirmed)
-      {
-        if(this.game?.selectedCards.length < this.game.currentSentence.blankFields || this.isSelected(card))
-        {
-          return true;
-        }
-      }
-      
-    }
-    return false;
-  }
-
-  selectUnselectCard(card: Card)
-  {
-    if(!this.isCardChar() && this.game)
-    {
-      if(this.isSelected(card))
-      {
-        //unselect card
-        const index = this.game.selectedCards.findIndex((c: Card) => c.id === card.id);
-        this.game.selectedCards.splice(index, 1);
-      }
-      else
-      {
-        //select card
-        if(this.game.selectedCards.length < this.game.currentSentence.blankFields
-          && this.game.players[this.playerIndex].hand.length == this.game.cardsInHand)
-        {
-          this.game.selectedCards.push(card);
-        }
-      }
-    }
+  selectUnselectCard(card: Card) {
+    this.gameService.changeSelectionOfTheCard(card);
   }
 }

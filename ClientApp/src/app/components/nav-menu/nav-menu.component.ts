@@ -1,52 +1,36 @@
-import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
-import { Observer, Subject } from 'src/app/helpers/observer';
-import { UserService } from 'src/app/services/user.service';
+import { Component } from '@angular/core';
+import { CurrentRoomService } from 'src/app/services/current-room/current-room.service';
+import { UserService } from 'src/app/services/user/user.service';
 
 //todo: move "Login as" and "Logout" to right
 @Component({
-  selector: 'app-nav-menu',
-  templateUrl: './nav-menu.component.html',
-  styleUrls: ['./nav-menu.component.css']
+    selector: 'app-nav-menu',
+    templateUrl: './nav-menu.component.html',
+    styleUrls: ['./nav-menu.component.css'],
+    standalone: false
 })
-export class NavMenuComponent implements OnInit, Observer
-{
+export class NavMenuComponent {
+  user = this.userService.currentUser;
+  isLogged = this.userService.isLogged;
   isExpanded = false;
-  username = "";
-  authentication = false;
 
-  constructor(private userService: UserService ) { }
+  constructor(
+    private readonly userService: UserService,
+    private readonly currentRoomService: CurrentRoomService
+  ) { }
 
-  ngOnInit(): void 
-  {
-    this.userService.attach(this); 
-    this.update(this.userService);
-  }
-
-  update(subject: Subject) 
-  {
-    if (subject instanceof UserService) 
-    {
-      console.log('NavMenuComponent: Reacted to the event.');
-      this.userService.checkIfLogged().subscribe({
-        next: result => { 
-          this.authentication = result;
-          this.username = this.userService.getUsername();
-        } 
-      });
+  logout(): void {
+    if(this.user()?.joinedRoom) {
+      this.currentRoomService.leave()
     }
+    this.userService.logout();
   }
 
-  logout()
-  {
-    console.log("logout");
-  }
-
-  collapse() {
+  collapse(): void {
     this.isExpanded = false;
   }
 
-  toggle() {
+  toggle(): void {
     this.isExpanded = !this.isExpanded;
   }
 }

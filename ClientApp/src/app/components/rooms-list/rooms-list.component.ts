@@ -1,126 +1,115 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { RoomService } from 'src/app/services/room.service';
-import { UserService } from 'src/app/services/user.service';
+import { Component, Inject, OnInit, signal } from '@angular/core';
+import { RoomService } from 'src/app/services/room/room.service';
+import { UserService } from 'src/app/services/user/user.service';
 import { Room, RoomState } from 'src/app/model/Room';
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
+import { CurrentRoomService } from 'src/app/services/current-room/current-room.service';
 
 //List of rooms
 //todo: leave room; refresh; private rooms - with password, watch mode
 @Component({
-  selector: 'app-rooms-list',
-  templateUrl: './rooms-list.component.html',
-  styleUrls: ['./rooms-list.component.css']
+    selector: 'app-rooms-list',
+    templateUrl: './rooms-list.component.html',
+    styleUrls: ['./rooms-list.component.css'],
+    standalone: false
 })
-export class RoomsListComponent implements OnInit
-{
-    public messages: string[] = [];
-    public rooms: Room[]  = [];
-    public userInput      = "";
-    public messageInput   = "";
-    public newRoomName    = "";
-    public userGuid       = "";
-    public username       = "{username}";
-    public newRoomPlayers = 5;
-    public roomError      = "";
+export class RoomsListComponent implements OnInit {
+    rooms = signal<Room[]>([]);
+    user = this.userService.getCurrentUser('RoomsListComponent init');
+    isLoading = signal(true);
+    newRoomName    = "";
+    newRoomPlayers = 5;
+    errorMessage      = "";
 
     constructor(
-      private roomService : RoomService,
-      private userService: UserService,
-      private router: Router
+      private readonly roomService : RoomService,
+      private readonly currentRoomService: CurrentRoomService,
+      private readonly userService: UserService,
+      private readonly router: Router
     ) { }
 
-    ngOnInit()
-    {
-      this.username = this.userService.getUsername();
-      this.userGuid = this.userService.getUserGuid();
+    ngOnInit(): void {
+      this.loadRooms();
+    }
 
+    loadRooms(): void {
       this.roomService.getAllRooms().subscribe({
-        next: response => { this.rooms = response },
-        error: e => { console.error("Error during loading rooms: " + String(e))}
+        next: response => { 
+          this.isLoading.set(false);
+          this.rooms.set(response);
+
+        },
+        error: e => { console.error("Error during loading rooms: ", e)}
       })
     }
 
-    addRoom()
-    {
-      console.log("addRoom()");
-      if (this.newRoomName && this.userGuid)
-      {
-        this.roomService.addRoom(this.newRoomName, this.userGuid, this.newRoomPlayers)
+    refresh(): void {
+      this.rooms.set([]);
+      this.user = this.userService.getCurrentUser('RoomsListComponent.refresh()');
+      this.loadRooms();
+    }
+
+    addRoom(): void {
+      if (this.newRoomName && this.user?.id) {
+        this.roomService.addRoom(this.newRoomName, this.user?.id, this.newRoomPlayers)
         .subscribe({
-          next: room => {
+          next: (room: Room) => {
             this.newRoomName = "";
-            this.rooms.push(room);
-            this.router.navigate(["room", String(room.guid)]);
+            this.rooms.update(prevRooms => { 
+              return [...prevRooms, room]
+            });
+            this.router.navigate(["room", room.id]);
           },
-          error: error => {
-            if(error instanceof HttpErrorResponse) this.roomError = String(error.error).split('\n')[0].substring(18);
-            else this.roomError = "Unknown error";
-            console.error("addRoom error: " + String(error))
-          }
+          error: err => this.errorMessage = err
         });
       }
     }
 
-    deleteRemove(roomId: string)
-    {
-      console.log("deleteRemove()");
-      if(confirm("Are you sure you want to delete the room?")) 
-      {
-        const index = this.rooms.findIndex(r => r.guid == roomId);
+    deleteRoom(roomId: string): void {
+      if(confirm("Are you sure you want to delete the room?")) {
+        this.currentRoomService.leave()
+        const index = this.rooms().findIndex(r => r.id == roomId);
         if (index > -1) {
           this.roomService.removeRoom(roomId).subscribe({
-            next: () => { this.rooms.splice(index, 1); }
+            next: () => { 
+              this.rooms.update(prevRooms => {
+                return prevRooms.filter((_, i) => i !== index);
+              })
+            }
           });
         }
       }
     }
 
-    enterRoom(roomId: string)
-    {
+    joinRoom(roomId: string): void {
+      const user = this.userService.getCurrentUser('RoomsListComponent.joinRoom()');
+
+      if(user?.joinedRoom) {
+        if(!confirm('You will leave the room you are currently in? Are you sure you want to join a new room?')) {
+          return;
+        }
+      }
+
       this.router.navigate(["room", String(roomId)])
     }
 
-    leaveRoom(roomId: string)
-    {
-      
+    leaveRoom(): void {
+      this.currentRoomService.leave();
     }
 
-    joinRoom(roomId: string)
-    {
-      console.log(`joinRoom(${roomId})`);
-      this.roomService.joinRoom(roomId, this.userGuid).subscribe({
-        next: () => {
-          this.router.navigate(["room", String(roomId)]);
-        },
-        error: error => {
-          if(error instanceof HttpErrorResponse) this.roomError = String(error.error).split('\n')[0].substring(18);
-          else this.roomError = "Unknown error";
-          console.error("addRoom error: " + String(error))
-        }
-      });
-      
-    }
+    noRoomsToShow = (): boolean => 
+      !this.isLoading()
+        && this.rooms().length === 0;
 
-    noRoomsToShow(): boolean
-    {
-      return this.rooms.length == 0;
-    }
+    userHasNoRoom = (): boolean => 
+      !this.isLoading()
+        && !this.rooms().some(r => r.ownerId === this.user?.id);
+    
+    isUserInRoom = (r: Room) : boolean => 
+      this.user?.id !== undefined 
+      && r.users.some((pl) => pl.id === (this.user?.id ?? ''));
 
-    userHasNoRoom(): boolean 
-    {
-      // console.log("userHasSomeRoom()");
-      return !this.rooms.some(room => room.ownerGuid == this.userGuid);
-    }
-
-    roomStateToString(state: number): string
-    {
-      return RoomState[state];
-    }
-
-    isUserInRoom(r: Room) : boolean
-    { 
-      return r.users.some((pl) => pl.id === this.userGuid);
-    }
+    roomStateToString = (state: number): string => 
+      RoomState[state];
 }
-

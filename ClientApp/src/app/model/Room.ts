@@ -1,34 +1,29 @@
+import { Deck } from "./Deck";
 import { Game, Card, Sentence } from "./Game";
+import { Message } from "./Message";
 import { User } from "./User";
 
-export class Room 
-{
-  guid : string = "";
+export class Room {
+  id : string = "";
   name : string = "";
   maxPlayers : number = 5;
-  state: RoomState = RoomState.New;
+  state: RoomState = RoomState.Configuration;
   
-  ownerGuid : string = ""; //uuid
+  ownerId : string = "";
   ownerName : string = "";
   
-  game : Game = new Game();
   sentences : Sentence[] = [];
   cards : Card[] = [];
   users : User[] = [];
-  messages: Message[] = [];
+  bannedUsers : string[] = [];  
+  messages : Message[] = [];
+  decks : Deck[] = [];
 }
 
-export class Message
-{
-  userId: string = "";
-  content: string = "";
-  created: string = new Date().toLocaleTimeString();
-  systemLog: boolean = false;
-}
-
-export enum RoomState
-{
-  New,
+export enum RoomState {
+  Configuration,
   Ingame,
   Finished
 }
+
+export { Message }

@@ -1,159 +1,103 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { HubConnection } from '@microsoft/signalr';
-import { Card, ChosenCards, Game, Player } from 'src/app/model/Game';
-import { RoomService } from 'src/app/services/room.service';
+import { Component } from '@angular/core';
+import { CurrentRoomService } from 'src/app/services/current-room/current-room.service';
+import { GameService } from 'src/app/services/current-room/game/game.service';
+import { UserService } from 'src/app/services/user/user.service';
 
 @Component({
-  selector: 'app-game-buttons',
-  templateUrl: './game-buttons.component.html',
-  styleUrls: ['./game-buttons.component.css']
+    selector: 'app-game-buttons',
+    templateUrl: './game-buttons.component.html',
+    styleUrls: ['./game-buttons.component.css'],
+    standalone: false
 })
-export class GameButtonsComponent implements OnInit {
-  
-  @Input() game?: Game;
-  @Input() userId = "";
-  @Input() ownerId = "";
-  @Input() connection?: HubConnection;
-  @Input() selectedCards: Card[] = [];
+export class GameButtonsComponent {
+  // room = this.currentRoomService.getCurrentRoom();
+  game = this.gameService.game;
+  user = this.userService.getCurrentUser("GameButtonsComponent");
   tip = "";
 
-  constructor(private roomService: RoomService)
-  {
+  constructor(
+    private readonly currentRoomService: CurrentRoomService,
+    private readonly gameService: GameService,
+    private readonly userService: UserService
+  ) {}
 
-  }
-
-  ngOnInit(): void 
-  {
-  }
-
-  calculateTip(): string
-  {
-    if(this.game)
-    {
-      if(this.game.state === 0) // PickCards
-      {
-        if( this.game.chooserId === this.userId ) return "You are the Card Char!\nWait for others to pick their answers.";
-        else if( !this.game.chosenCards.some((cc: ChosenCards) => cc.playerId === this.userId) )
-        {
-          if( this.game.currentSentence.blankFields > 1 ) return "Pick " + this.game.currentSentence.blankFields + " cards in correct order.";
-          else return"Pick the best matching card."
-        }
-        else return "Wait for others to pick their answers.";
-      }
-      else if(this.game.state === 1) // ShowCards
-      {
-        if( this.game.chooserId === this.userId ) return "Pick the best matching answer.";
-        else return "Wait for the decision... 🥁";
-      }
-      else if (this.game.state === 2) // ShowWinner
-      {
-        if( this.game.chooserId === this.userId ) return "Click the button to continue.";
-        else return "Wait for next the round.";
-      }
-      else if (this.game.state === 3) // Finished
-      {
-        if( this.ownerId === this.userId ) return "Click the button to start a new game.";
-        else return "The game is finished. Wait for the owner to start a new one."
+  calculateTip(): string {
+    const game = this.game();
+    if(game) {
+      if(game.state === 1) { // PickCards
+        if(this.gameService.isCardChar()) {
+          return "You are the Card Char!\nWait for others to pick their answers.";
+        } else if(!this.gameService.hasPlayerAlreadySentCards()) {
+          const blankFields = game.currentSentence?.blankFields;
+          if(blankFields > 1) {
+            return `Pick ${blankFields} cards in correct order.`;
+          } else return "Pick the best matching card.";
+        } else return "Wait for others to pick their answers.";
+      } else if(game.state === 2) { //Show cards
+        if(this.gameService.isCardChar()) {
+          return "Pick the best matching answer.";
+        } else return "Wait for the decision... 🥁";
+      } else if (game.state === 3) { //Show winner
+        if(this.gameService.isCardChar()) {
+          return "Click the button to continue.";
+        } else return "Wait for next the round.";
+      } else if (game.state === 4) { // Finished
+        const roomOwnerId = this.currentRoomService.room()?.ownerId;
+        if( roomOwnerId === this.user?.id ) {
+          return "Click the button to start a new game.";
+        } else return "The game is finished. Wait for the owner to start a new one."
       }
     }
     return "Error. No game object found."
   }
 
-  isConfirmDisabled()
-  {
-    if(this.game)
-    {
-      if(this.game.state === 0) //PickCards
-      {
-        if( this.game.selectedCards.length === this.game.currentSentence.blankFields ) return false; //&& !this.game.chosenCards.some( (cc: ChosenCards) => cc.playerId === this.userId )
-        else return true;
+  isConfirmDisabled() {
+    const game = this.gameService.game();
+    if(game) {
+      if(game.state === 1) { // Picking cards
+        const selectedCardsLength = this.gameService.selectedCards().length;
+        const blankFields = game.currentSentence.blankFields;
+        const hasPlayerChosenCards = this.gameService.hasPlayerAlreadySentCards();
+        return selectedCardsLength !== blankFields && !hasPlayerChosenCards;
       }
-      else if(this.game.state === 1) // ShowCards
-      {
-        if( this.game.chooserId === this.userId && this.game.selectedCardsSet) return false;
-        else return true;
+      else if(game.state === 2) { // Showing cards
+        const selectedCardsSet = this.gameService.selectedCardsSet();
+        return !selectedCardsSet;
       }
-      else return false;
     }
-    else
-    {
-      this.tip = "Error. No game object found."
+
+    return false;
+  }
+
+  showConfirmButton() {
+    const gameState = this.gameService.game()?.state;
+    if(gameState === 1) {
+      return !this.gameService.isCardChar() && !this.gameService.hasPlayerAlreadySentCards();
+    } else if(gameState === 2) {
+      return this.gameService.isCardChar();
     }
     return false;
   }
 
-  showConfirmButton()
-  {
-    if(this.game)
-    {
-      if(this.game.state === 0) //PickCards
-      {
-        if( this.game.chooserId !== this.userId) return true;
-      }
-      else if(this.game.state === 1) // ShowCards
-      {
-        if( this.game.chooserId === this.userId ) return true;
-      }
-      else return false;
-    }
-    else
-    {
-      this.tip = "Error. No game object found."
-    }
-    return false;
+  showNextRoundButton(): boolean {
+    const gameState = this.gameService.game()?.state;
+    return (gameState === 3 && this.gameService.isCardChar()) ?? false;
   }
 
-  showNextRoundButton(): boolean
-  {
-    if(this.game?.state === 2 && this.game.chooserId === this.userId) return true;
-    return false;
-  }
-
-  confirm()
-  {
-    if(this.game)
-    {
-      if(this.game.state === 0)
-      {
-        const chosenCards = new ChosenCards();
-        chosenCards.playerId = this.userId; 
-        chosenCards.cards = this.game.selectedCards;
-  
-        //sent cards to server
-        this.connection?.invoke("CardsConfirmed", this.game.roomId, chosenCards);
-        
-
-
-        //remove selected cards from hand
-        const playerIndex = this.game.players.findIndex(p => p.id === this.userId);
-        const hand = this.game.players[playerIndex].hand;
-        this.game.players[playerIndex].hand = hand.filter(cardInHand => !this.game?.selectedCards.some(selectedCard => selectedCard.id === cardInHand.id));
-
-        // mark flag that current user already made his choice
-        this.game.cardsConfirmed = true;
-
-        //unselect all
-        this.game.selectedCards = [];
-  
-        //set tip
-        // this.tip = "Wait for others to pick their answers.";
-      }
-      else if(this.game.state === 1)
-      {
-        if(this.connection)
-        {
-          this.connection?.invoke("ChoosedAnswer", this.game.roomId, this.userId, this.game.selectedCardsSet?.id);
-        }
+  confirm(): void {
+    const gameState = this.gameService.game()?.state;
+    if(gameState) {
+      if(gameState === 1) {
+        this.gameService.confirmSelectedCards();
+        this.tip = "Wait for others to pick their answers.";
+      } else if(gameState === 2) {
+        this.gameService.confirmWinner();
       }
     }
   }
 
-  nextRound()
-  {
-    if(this.game)
-    {
-      this.connection?.invoke("NextRound", this.game.roomId, this.userId);
-    }
+  nextRound(): void {
+    this.gameService.nextRound();
   }
 
 }
